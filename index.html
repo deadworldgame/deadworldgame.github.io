@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LOOT</title>
+<link rel="icon" href="chest-icon.ico" type="image/x-icon"> <!-- Favicon link -->
+<style>
+  body {
+    font-family: 'Times New Roman', serif;
+    text-align: center;
+    margin-top: 50px;
+    background-color: #ff4500; /* Red orange background */
+    color: #3e2723; /* Dark black brown text */
+    text-transform: uppercase; /* All text in uppercase */
+  }
+  #weapon {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+  button {
+    background-color: transparent;
+    border: none;
+    color: #ffdf00; /* Sparkle color */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+  }
+  .weapon-detail {
+    margin: 5px 0;
+  }
+</style>
+</head>
+<body>
+<button onclick="initializeWeapon()">✨</button>
+<div id="weapon"></div>
+
+<script>
+const meleeWeapons = [
+    "Short Sword", "Twin Short Swords", "Long Sword", "Great Sword", "Sword and Shield",
+    "Mace", "Morningstar", "War Hammer", "Great Hammer", "Maul", "Spear", "Trident",
+    "Pike", "Halberd", "Glaive", "Scythe", "Dagger", "Twin Daggers", "Long Knife",
+    "Whip", "Hatchet", "Battle Axe", "Great Axe", "Totem", "Club", "Twin Clubs",
+    "Great Club", "Staff", "Quarter Staff", "Buckler", "Kite Shield", "Round Shield", "Tower Shield"
+];
+
+const rangedWeapons = [
+    "Shortbow", "Longbow", "Composite Bow", "Hand Crossbow", "Light Crossbow", "Heavy Crossbow",
+    "Flintlock Pistol", "Musket", "Blunderbuss", "Pistol", "Revolver", "Rifle", "Shotgun",
+    "Sling", "Throwing Knife", "Throwing Axe", "Throwing Hammer", "Throwing Dart", "Javelin"
+];
+
+const perks = [
+    "Compensating", "High Roller", "Low Roller", "Strike Diagonal", "Strike Horizontal",
+    "Solo", "Flanker", "Strike Ranged", "Strike Melee", "Peaceful", "Killer", "Strike Vulnerable",
+    "Strike Fire", "Strike Water", "Strike Earth", "Strike Air", "Absorb Vulnerable", "Absorb Fire",
+    "Absorb Water", "Absorb Earth", "Absorb Air", "Evasive", "Absorb", "Safe", "Proximity",
+    "Healthy 100%", "Healthy >50%", "Healthy <50%", "Healthy <10%", "Flanked", "Co-operative",
+    "Mobile", "Stationary", "Healing", "Absorb Heal", "Combo", "Inflictor"
+];
+
+function initializeWeapon() {
+    const weaponType = Math.random() < 0.5 ? "Melee" : "Ranged";
+    const weaponName = weaponType === "Melee" ? meleeWeapons[Math.floor(Math.random() * meleeWeapons.length)] : rangedWeapons[Math.floor(Math.random() * rangedWeapons.length)];
+    rollWeapon(4, weaponType, weaponName);
+}
+
+function rollWeapon(diceSides, weaponType, weaponName) {
+  var randomNumber;
+  var rarity, perkCount;
+  switch (diceSides) {
+    case 4:
+      rarity = "Common";
+      perkCount = 1;
+      randomNumber = Math.floor(Math.random() * diceSides) + 1;
+      break;
+    case 6:
+      rarity = "Uncommon";
+      perkCount = 2;
+      randomNumber = Math.floor(Math.random() * diceSides) + 1;
+      break;
+    case 8:
+      rarity = "Rare";
+      perkCount = 3;
+      randomNumber = Math.floor(Math.random() * diceSides) + 1;
+      break;
+    case 10:
+      rarity = "Mythic";
+      perkCount = 4;
+      randomNumber = Math.floor(Math.random() * diceSides) + 1;
+      break;
+    case 12:
+      rarity = "Legendary";
+      perkCount = 5;
+      // Ensure legendary weapons roll between 7 and 12
+      randomNumber = Math.floor(Math.random() * (diceSides / 2)) + (diceSides / 2 + 1);
+      break;
+  }
+
+  const selectedPerks = [];
+  for (let i = 0; i < perkCount; i++) {
+    selectedPerks.push(perks[Math.floor(Math.random() * perks.length)]);
+  }
+
+  var resultText = `
+    <div class="weapon-detail"><strong>Name</strong> ${weaponName}</div>
+    <div class="weapon-detail"><strong>Rarity</strong> ${rarity}</div>
+    <div class="weapon-detail"><strong>Range</strong> ${weaponType}</div>
+    <div class="weapon-detail"><strong>Damage</strong> ${randomNumber}</div>
+    <div class="weapon-detail"><strong>Perks</strong> ${selectedPerks.join(", ")}
+  `;
+
+  if (randomNumber <= diceSides / 2 && diceSides < 12) {
+    var newSides = diceSides + 2;
+    var newRarity = newSides === 6 ? "Uncommon" : newSides === 8 ? "Rare" : newSides === 10 ? "Mythic" : "Legendary";
+    alert("Your " + weaponType.toLowerCase() + " weapon: " + weaponName + " has been upgraded to " + newRarity + "!");
+    resultText = rollWeapon(newSides, weaponType, weaponName);
+  }
+
+  document.getElementById("weapon").innerHTML = resultText;
+  return resultText;
+}
+</script>
+</body>
+</html>
